@@ -2,3 +2,4 @@ build
 *.iso
 *.bin
 compile_commands
+root_dir/boot/dernel

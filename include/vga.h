@@ -1,0 +1,25 @@
+#pragma once
+#include <stdint.h>
+
+#define WIDTH 80
+#define HEIGHT 25
+
+#define BLACK           0x0
+#define LIGHT_GREY      0x7
+#define BLUE            0x1
+#define LIGHT_BLUE      0x9
+#define GREEN           0x2
+#define LIGHT_GREEN     0xA
+#define RED             0x4
+#define LIGHT_RED       0xC
+#define YELLOW          0xE
+#define DARK_GREY       0x8
+#define WHITE           0xF
+
+
+void printk(const char* fmt, const uint16_t color);
+void new_line();
+void scroll_up();
+void scroll_down();
+void clear_screen();
+
