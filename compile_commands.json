@@ -1,0 +1,20 @@
+[
+  {
+    "file": "boot/kernel.c",
+    "arguments": [
+      "/home/bhargav/extra-space/opt/cross/bin/i686-elf-gcc",
+      "-std=gnu99",
+      "-ffreestanding",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Iinclude",
+      "-c",
+      "boot/kernel.c",
+      "-o",
+      "build/kernel.o"
+    ],
+    "directory": "/home/bhargav/extra-space/Dernel",
+    "output": "build/kernel.o"
+  }
+]
