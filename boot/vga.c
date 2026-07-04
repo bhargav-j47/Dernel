@@ -41,8 +41,11 @@ void scroll_up(){
 
 }
 
-void printk(const char *fmt, const uint16_t color) {
+void set_color(const uint16_t color) {
     cur_color = color;
+}
+
+void printk(const char* fmt) {
 
     while (*fmt) {
         switch (*fmt) {
