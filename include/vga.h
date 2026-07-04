@@ -17,7 +17,7 @@
 #define WHITE           0xF
 
 
-void printk(const char* fmt);
+void printk(const char* fmt, ...);
 void set_color(const uint16_t color);
 void new_line();
 void scroll_up();
