@@ -34,21 +34,22 @@ all: $(KERNEL)
 # We use $(CC) to link rather than $(LD) directly so it can locate libgcc internally
 $(KERNEL): $(OBJS)
 	@echo "LD	$@"
-	$(CC) $(LDFLAGS) -o $@ $^ -lgcc
+	@$(CC) $(LDFLAGS) -o $@ $^ -lgcc
 
 # assemble assembly files
 $(OBJ_DIR)/%.o: $(BOOT_DIR)/%.asm
 	@mkdir -p $(OBJ_DIR)
 	@echo "AS	$<"
-	$(AS) $(ASFLAGS) $< -o $@
+	@$(AS) $(ASFLAGS) $< -o $@
 
 # compile C files
 $(OBJ_DIR)/%.o: $(BOOT_DIR)/%.c
 	@mkdir -p $(OBJ_DIR)
-	@echo "  CC      $<"
-	$(CC) $(CFLAGS) -c $< -o $@
+	@echo "CC      $<"
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf $(OBJ_DIR) $(KERNEL)
+	@echo "CLEAN"
+	@rm -rf $(OBJ_DIR) $(KERNEL)
 
 .PHONY: all clean
