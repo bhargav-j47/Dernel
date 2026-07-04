@@ -10,7 +10,7 @@ void kernel_main(void) {
     const char* strg =
         "dernel loaded successfully";
     clear_screen();
-    set_color( (GREEN | BLACK << 4));
+    set_color(GREEN | BLACK << 4);
     printk("Hii Bhargav here\n%s %d", strg, -43 );
 
 }

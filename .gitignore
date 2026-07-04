@@ -1,5 +1,5 @@
 build
 *.iso
 *.bin
-compile_commands
+compile_commands.json
 root_dir/boot/dernel
