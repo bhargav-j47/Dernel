@@ -6,7 +6,6 @@ AS = nasm
 
 # Project Directories
 BOOT_DIR = boot
-SRC_DIR = src
 INC_DIR = include
 OBJ_DIR = build
 

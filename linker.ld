@@ -2,8 +2,7 @@ ENTRY(_start)
 
 SECTIONS
 {
-    /*  Begin putting sections at 1 Megabyte, a conventional place for kernels to be */
-  
+    /*  Begin putting sections at 1 Megabyte */
     . = 1M;
 
     .boot BLOCK(4K) : ALIGN(4K) {
