@@ -1,7 +1,6 @@
 global x86_load_gdt
 
 x86_load_gdt:
-
     mov eax, [esp + 4]  ;get function attribute to eax
     lgdt [eax]          ; load gdt
     
@@ -21,4 +20,12 @@ x86_load_gdt:
     jmp 0x08:.flush_cs
 
 .flush_cs:
+    ret
+
+
+global tss_flush
+
+tss_flush:
+    mov ax, 0x28        ; The offset in the GDT to our TSS (Index 5)
+    ltr ax              ; Load Task Register
     ret
