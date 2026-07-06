@@ -12,10 +12,10 @@ OBJ_DIR = build
 # Output and Flags
 KERNEL = kernel.bin
 
-CFLAGS = -std=gnu99 -ffreestanding -O2 -Wall -Wextra -I$(INC_DIR)
+CFLAGS = -std=gnu99 -ffreestanding -O2 -Wall -Wextra -I$(INC_DIR) -g
 ASFLAGS = -f elf32
 # -T linker.ld: Uses your specific linker script
-LDFLAGS = -T linker.ld -ffreestanding -O2 -nostdlib
+LDFLAGS = -T linker.ld -ffreestanding -O2 -nostdlib 
 
 # Source and Object Files
 BOOT_SRCS = $(wildcard $(BOOT_DIR)/*.asm)
