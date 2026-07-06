@@ -2,7 +2,6 @@
 #include <vga.h>
 #include <stdarg.h>
 
-
 volatile uint16_t* vgabuffer = (uint16_t*) 0xB8000;
 uint16_t def_color = (BLACK << 4) | (DARK_GREY);
 uint16_t cur_color;

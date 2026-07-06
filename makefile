@@ -6,6 +6,7 @@ AS = nasm
 
 # Project Directories
 ARCH_X86_DIR = arch/x86
+LIB_DIR = lib
 INC_DIR = include
 OBJ_DIR = build
 
@@ -18,21 +19,24 @@ LDFLAGS = -T linker.ld -ffreestanding -O2 -nostdlib
 
 # 1. Automatically find all subdirectories inside arch/x86/
 SRC_DIRS := $(shell find $(ARCH_X86_DIR) -type d)
+LIB_DIRS := $(shell find $(LIB_DIR) -type d)
 
 # 2. Tell Make to search ALL found directories for source files
-vpath %.c $(SRC_DIRS)
+vpath %.c $(SRC_DIRS) $(LIB_DIRS)
 vpath %.asm $(SRC_DIRS)
 
 # 3. Recursively find every .c and .asm file inside arch/x86/
 ASM_SRCS := $(shell find $(ARCH_X86_DIR) -name '*.asm')
 C_SRCS := $(shell find $(ARCH_X86_DIR) -name '*.c')
+LIB_SRCS := $(shell find $(LIB_DIR) -name '*.c')
 
 # 4. Map them to a flat list of .o files in the build/ directory using 'notdir'
 ASM_OBJS := $(patsubst %.asm, $(OBJ_DIR)/%.o, $(notdir $(ASM_SRCS)))
 C_OBJS := $(patsubst %.c, $(OBJ_DIR)/%.o, $(notdir $(C_SRCS)))
+LIB_OBJS := $(patsubst %.c,   $(OBJ_DIR)/%.o, $(notdir $(LIB_SRCS)))
 
 # Combine all object files
-OBJS = $(ASM_OBJS) $(C_OBJS)
+OBJS = $(ASM_OBJS) $(C_OBJS) $(LIB_OBJS)
 
 all: $(KERNEL)
 
