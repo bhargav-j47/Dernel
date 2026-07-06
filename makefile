@@ -5,7 +5,7 @@ CC = $(CPATH)/$(TARGET)-gcc
 AS = nasm
 
 # Project Directories
-BOOT_DIR = boot
+ARCH_X86_DIR = arch/x86
 INC_DIR = include
 OBJ_DIR = build
 
@@ -14,19 +14,25 @@ KERNEL = kernel.bin
 
 CFLAGS = -std=gnu99 -ffreestanding -O2 -Wall -Wextra -I$(INC_DIR) -g
 ASFLAGS = -f elf32
-# -T linker.ld: Uses your specific linker script
 LDFLAGS = -T linker.ld -ffreestanding -O2 -nostdlib 
 
-# Source and Object Files
-BOOT_SRCS = $(wildcard $(BOOT_DIR)/*.asm)
-C_SRCS = $(wildcard $(BOOT_DIR)/*.c)
+# 1. Automatically find all subdirectories inside arch/x86/
+SRC_DIRS := $(shell find $(ARCH_X86_DIR) -type d)
 
-# Map source files to object files in the build directory
-BOOT_OBJS = $(patsubst $(BOOT_DIR)/%.asm, $(OBJ_DIR)/%.o, $(BOOT_SRCS))
-C_OBJS = $(patsubst $(BOOT_DIR)/%.c, $(OBJ_DIR)/%.o, $(C_SRCS))
+# 2. Tell Make to search ALL found directories for source files
+vpath %.c $(SRC_DIRS)
+vpath %.asm $(SRC_DIRS)
+
+# 3. Recursively find every .c and .asm file inside arch/x86/
+ASM_SRCS := $(shell find $(ARCH_X86_DIR) -name '*.asm')
+C_SRCS := $(shell find $(ARCH_X86_DIR) -name '*.c')
+
+# 4. Map them to a flat list of .o files in the build/ directory using 'notdir'
+ASM_OBJS := $(patsubst %.asm, $(OBJ_DIR)/%.o, $(notdir $(ASM_SRCS)))
+C_OBJS := $(patsubst %.c, $(OBJ_DIR)/%.o, $(notdir $(C_SRCS)))
 
 # Combine all object files
-OBJS = $(BOOT_OBJS) $(C_OBJS)
+OBJS = $(ASM_OBJS) $(C_OBJS)
 
 all: $(KERNEL)
 
@@ -36,15 +42,15 @@ $(KERNEL): $(OBJS)
 	@$(CC) $(LDFLAGS) -o $@ $^ -lgcc
 
 # assemble assembly files
-$(OBJ_DIR)/%.o: $(BOOT_DIR)/%.asm
+$(OBJ_DIR)/%.o: %.asm
 	@mkdir -p $(OBJ_DIR)
 	@echo "AS	$<"
 	@$(AS) $(ASFLAGS) $< -o $@
 
 # compile C files
-$(OBJ_DIR)/%.o: $(BOOT_DIR)/%.c
+$(OBJ_DIR)/%.o: %.c
 	@mkdir -p $(OBJ_DIR)
-	@echo "CC      $<"
+	@echo "CC	$<"
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
