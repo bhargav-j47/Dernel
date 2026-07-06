@@ -5,7 +5,7 @@ CC = $(CPATH)/$(TARGET)-gcc
 AS = nasm
 
 # Project Directories
-ARCH_X86_DIR = arch/x86
+ARCH_X86_DIR = arch
 LIB_DIR = lib
 INC_DIR = include
 OBJ_DIR = build
