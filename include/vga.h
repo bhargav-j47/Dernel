@@ -16,11 +16,9 @@
 #define DARK_GREY       0x8
 #define WHITE           0xF
 
-
-void printk(const char* fmt, ...);
-void set_color(const uint16_t color);
-void new_line();
-void scroll_up();
-void scroll_down();
-void clear_screen();
-
+void vga_set_color(const uint16_t color);
+void vga_new_line();
+void vga_scroll_up();
+void vga_scroll_down();
+void vga_clear_screen();
+void vga_putchar(const char c);

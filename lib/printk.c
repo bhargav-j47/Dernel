@@ -1,71 +1,35 @@
+#include "printk.h"
 #include <stdint.h>
 #include <vga.h>
 #include <stdarg.h>
 
-volatile uint16_t* vgabuffer = (uint16_t*) 0xB8000;
-uint16_t def_color = (BLACK << 4) | (DARK_GREY);
-uint16_t cur_color;
+// --- KERNEL LOG BUFFER ---
+#define KERNEL_LOG_SIZE 4096
+static char kernel_log[KERNEL_LOG_SIZE];
+static uint32_t log_write_ptr = 0;
+static uint32_t log_read_ptr = 0;
 
-uint16_t line = 0;
-uint16_t column = 0;
 
-void clear_screen() {
-    line = 0;
-    column = 0;
-    cur_color =def_color;
-
-    for (uint16_t y=0; y < HEIGHT; y++) {
-        for (uint16_t x=0; x < WIDTH; x++) {
-            vgabuffer[y * WIDTH + x] =
-                (uint16_t)' ' | ((uint16_t)def_color << 8);
-        }
+void buff_putchar(const char c){
+    kernel_log[log_write_ptr] = c;
+    log_write_ptr = (log_write_ptr + 1) % KERNEL_LOG_SIZE;
+    
+    // If buffer is full, overwrite oldest data by moving read pointer
+    if (log_write_ptr == log_read_ptr) {
+        log_read_ptr = (log_read_ptr + 1) % KERNEL_LOG_SIZE;
     }
-}
-
-void new_line() {
-    if (line < HEIGHT) {
-        column=0;
-        line++;
-    }else {
-        column=0;
-        scroll_up();
-    }
-}
-
-void scroll_up(){
-   for (uint16_t y=0; y < HEIGHT-1; y++) {
-        for (uint16_t x=0; x < WIDTH-1; x++) {
-            vgabuffer[y * WIDTH + x] = vgabuffer[(y+1) * WIDTH + x];
-        }
-    }
-
-}
-
-void set_color(const uint16_t color) {
-    cur_color = color;
-}
-
-void print_char(const char c){
-    if (column == WIDTH) {
-        new_line();
-    }
-
-    vgabuffer[line * WIDTH + column] =
-                    (uint16_t)c | ((uint16_t)cur_color << 8);
-
-    column++;
 }
 
 void print_str(const char* st) {
     while (*st) {
-        print_char(*st);
+        buff_putchar(*st);
         st++;
     }
 }
 
 void print_uint(uint32_t d) {
     if (d==0) {
-        print_char('0');
+        buff_putchar('0');
         return;
     }
     char buff[32];
@@ -80,7 +44,7 @@ void print_uint(uint32_t d) {
     }
 
     while (i > 0) {
-        print_char(buff[--i]);   
+        buff_putchar(buff[--i]);   
     }
 
     return;
@@ -97,17 +61,13 @@ void printk(const char* fmt, ...) {
 
     while (*fmt) {
         switch (*fmt) {
-            case '\n':
-                new_line();
-                break;
-
             case '%':
                 fmt++;
                 switch (*fmt){
                     case 'd':
                         d = va_arg(args, int32_t);
                         if (d < 0) {
-                            print_char('-');
+                            buff_putchar('-');
                             d *= -1;
                         }
                         print_uint(d);
@@ -125,11 +85,11 @@ void printk(const char* fmt, ...) {
 
                     case 'c': 
                         c = (char)va_arg(args,int);
-                        print_char(c);
+                        buff_putchar(c);
                         break;
 
                     case '%':
-                        print_char((const char)'%');
+                        buff_putchar((const char)'%');
                         break;
 
                     default:
@@ -139,7 +99,7 @@ void printk(const char* fmt, ...) {
                 break;
 
             default:
-                print_char(*fmt);
+                buff_putchar(*fmt);
                 break;
         }
         fmt++;
@@ -147,5 +107,20 @@ void printk(const char* fmt, ...) {
 
 err:
     va_end(args);
+    console_flush();        //temporary fix will remove once multitasking is on
     return;
+}
+
+
+extern void vga_putchar(char c);
+
+// Flushes the memory buffer to the active hardware console
+void console_flush() {
+    while (log_read_ptr != log_write_ptr) {
+        char c = kernel_log[log_read_ptr];
+        
+        vga_putchar(c); // Send to x86 VGA
+        
+        log_read_ptr = (log_read_ptr + 1) % KERNEL_LOG_SIZE;
+    }
 }

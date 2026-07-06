@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include <vga.h>
+#include <printk.h>
 #include <kstring.h>
 #include <gdt.h>
 

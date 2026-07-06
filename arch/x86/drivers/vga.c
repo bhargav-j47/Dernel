@@ -1,0 +1,59 @@
+#include <stdint.h>
+#include <vga.h>
+#include <stdarg.h>
+
+volatile uint16_t* vgabuffer = (uint16_t*) 0xB8000;
+uint16_t def_color = (BLACK << 4) | (DARK_GREY);
+uint16_t cur_color;
+
+uint16_t line = 0;
+uint16_t column = 0;
+
+void vga_clear_screen() {
+    line = 0;
+    column = 0;
+    cur_color =def_color;
+
+    for (uint16_t y=0; y < HEIGHT; y++) {
+        for (uint16_t x=0; x < WIDTH; x++) {
+            vgabuffer[y * WIDTH + x] =
+                (uint16_t)' ' | ((uint16_t)def_color << 8);
+        }
+    }
+}
+
+void vga_new_line() {
+    if (line < HEIGHT) {
+        column=0;
+        line++;
+    }else {
+        column=0;
+        vga_scroll_up();
+    }
+}
+
+void vga_scroll_up(){
+   for (uint16_t y=0; y < HEIGHT-1; y++) {
+        for (uint16_t x=0; x < WIDTH-1; x++) {
+            vgabuffer[y * WIDTH + x] = vgabuffer[(y+1) * WIDTH + x];
+        }
+    }
+
+}
+
+void vga_set_color(const uint16_t color) {
+    cur_color = color;
+}
+
+void vga_putchar(const char c){
+    if (column == WIDTH || c =='\n') {
+        vga_new_line();
+        return;
+    }
+
+    vgabuffer[line * WIDTH + column] =
+                    (uint16_t)c | ((uint16_t)cur_color << 8);
+
+    column++;
+}
+
