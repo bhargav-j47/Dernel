@@ -1,9 +1,9 @@
 #include <stdint.h>
 #include <stddef.h>
-#include <kernel.h>
-#include <vga.h>
-#include <printk.h>
-#include <gdt.h>
+#include <arch32/kernel.h>
+#include <arch32/vga.h>
+#include <lib/printk.h>
+#include <arch32/gdt.h>
 
 volatile uint16_t* vga_buffer = (uint16_t*)0xB8000;
 

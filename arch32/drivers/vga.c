@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include <vga.h>
+#include <arch32/vga.h>
 #include <stdarg.h>
 
 volatile uint16_t* vgabuffer = (uint16_t*) 0xB8000;

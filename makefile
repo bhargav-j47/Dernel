@@ -1,64 +1,41 @@
-# Cross-Compiler Configuration
-TARGET = i686-elf
-CPATH = /home/bhargav/extra-space/opt/cross/bin
-CC = $(CPATH)/$(TARGET)-gcc
-AS = nasm
+MAKEFLAGS += --no-print-directory
 
-# Project Directories
-ARCH_X86_DIR = arch
-LIB_DIR = lib
-INC_DIR = include
-OBJ_DIR = build
+export TARGET := i686-elf
+export CPATH  := /home/bhargav/extra-space/opt/cross/bin
+export CC     := $(CPATH)/$(TARGET)-gcc
+export AR     := $(CPATH)/$(TARGET)-ar
+export AS     := nasm
+export LD 	  := $(CPATH)/$(TARGET)-ld
 
-# Output and Flags
-KERNEL = kernel.bin
+export TOPDIR := $(CURDIR)
+export INC_DIR:= $(TOPDIR)/include
 
-CFLAGS = -std=gnu99 -ffreestanding -O2 -Wall -Wextra -I$(INC_DIR) -g
-ASFLAGS = -f elf32
-LDFLAGS = -T linker.ld -ffreestanding -O2 -nostdlib 
+export CFLAGS := -std=gnu99 -ffreestanding -O2 -Wall -Wextra -I$(INC_DIR) -g
+export ASFLAGS:= -f elf32
+export LDFLAGS:= -T linker.ld -ffreestanding -O2 -nostdlib
 
-# 1. Automatically find all subdirectories inside arch/x86/
-SRC_DIRS := $(shell find $(ARCH_X86_DIR) -type d)
-LIB_DIRS := $(shell find $(LIB_DIR) -type d)
+KERNEL  := kernel.bin
+SUBDIRS := arch32 lib 
 
-# 2. Tell Make to search ALL found directories for source files
-vpath %.c $(SRC_DIRS) $(LIB_DIRS)
-vpath %.asm $(SRC_DIRS)
+# Collect the built-in.a from each subsystem
+OBJS    := $(patsubst %, %/built-in.o, $(SUBDIRS))
 
-# 3. Recursively find every .c and .asm file inside arch/x86/
-ASM_SRCS := $(shell find $(ARCH_X86_DIR) -name '*.asm')
-C_SRCS := $(shell find $(ARCH_X86_DIR) -name '*.c')
-LIB_SRCS := $(shell find $(LIB_DIR) -name '*.c')
-
-# 4. Map them to a flat list of .o files in the build/ directory using 'notdir'
-ASM_OBJS := $(patsubst %.asm, $(OBJ_DIR)/%.o, $(notdir $(ASM_SRCS)))
-C_OBJS := $(patsubst %.c, $(OBJ_DIR)/%.o, $(notdir $(C_SRCS)))
-LIB_OBJS := $(patsubst %.c,   $(OBJ_DIR)/%.o, $(notdir $(LIB_SRCS)))
-
-# Combine all object files
-OBJS = $(ASM_OBJS) $(C_OBJS) $(LIB_OBJS)
+.PHONY: all clean $(SUBDIRS)
 
 all: $(KERNEL)
 
-# We use $(CC) to link rather than $(LD) directly so it can locate libgcc internally
-$(KERNEL): $(OBJS)
-	@echo "LD	$@"
-	@$(CC) $(LDFLAGS) -o $@ $^ -lgcc
+# link using CC to automatically locate libgcc
+$(KERNEL): $(SUBDIRS)
+	@echo "  LD      $@"
+	@$(CC) $(LDFLAGS) -o $@ $(OBJS) -lgcc
 
-# assemble assembly files
-$(OBJ_DIR)/%.o: %.asm
-	@mkdir -p $(OBJ_DIR)
-	@echo "AS	$<"
-	@$(AS) $(ASFLAGS) $< -o $@
-
-# compile C files
-$(OBJ_DIR)/%.o: %.c
-	@mkdir -p $(OBJ_DIR)
-	@echo "CC	$<"
-	@$(CC) $(CFLAGS) -c $< -o $@
+# step into subdirectories
+$(SUBDIRS):
+	@$(MAKE) -C $@ TOPDIR=$(TOPDIR)
 
 clean:
-	@echo "CLEAN"
-	@rm -rf $(OBJ_DIR) $(KERNEL)
-
-.PHONY: all clean
+	@for dir in $(SUBDIRS); do \
+		$(MAKE) -C $$dir clean; \
+	done
+	@rm -f $(KERNEL)
+	@echo "  CLEAN   $(KERNEL)"

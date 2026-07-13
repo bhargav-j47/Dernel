@@ -1,7 +1,7 @@
 #include <stdint.h>
-#include <printk.h>
-#include <kstring.h>
-#include <gdt.h>
+#include <lib/printk.h>
+#include <lib/kstring.h>
+#include <arch32/gdt.h>
 
 // helper macros
 // for flags

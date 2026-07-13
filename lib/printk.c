@@ -1,6 +1,6 @@
-#include "printk.h"
+#include <lib/printk.h>
 #include <stdint.h>
-#include <vga.h>
+#include <arch32/vga.h>
 #include <stdarg.h>
 
 // --- KERNEL LOG BUFFER ---
