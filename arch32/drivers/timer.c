@@ -37,6 +37,7 @@ volatile uint32_t tick = 0;
 
 void timer_callback(int_registers_t* regs) {
     tick++;
+    regs->int_no = regs->int_no;
 }
 
 void init_pit(uint32_t freq) {
