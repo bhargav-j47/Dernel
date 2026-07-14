@@ -4,6 +4,8 @@
 #include <arch32/vga.h>
 #include <lib/printk.h>
 #include <arch32/gdt.h>
+#include <arch32/idt.h>
+#include <arch32/exceptions.h>
 
 volatile uint16_t* vga_buffer = (uint16_t*)0xB8000;
 
@@ -15,4 +17,8 @@ void kernel_main(void) {
     vga_set_color(GREEN | BLACK << 4);
     printk("Hii Bhargav here\n%s %d\n", strg, -43 );
     init_gdt();
+    init_idt();
+    install_exception_handlers();
+    asm volatile("sti");
+    int16_t a = 4/0;
 }
