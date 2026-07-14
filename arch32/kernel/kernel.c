@@ -19,6 +19,8 @@ void kernel_main(void) {
     init_gdt();
     init_idt();
     install_exception_handlers();
-    asm volatile("sti");
-    int16_t a = 4/0;
+    asm volatile("sti"); // starts the intrrupts
+    //volatile int16_t z= 0;
+    //volatile int16_t a = 4/z;
+    asm volatile("ud2"); //send invalid opcode
 }

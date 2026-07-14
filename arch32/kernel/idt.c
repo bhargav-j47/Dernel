@@ -113,8 +113,6 @@ void setup_idt_table() {
     kmemset(&idt_table, 0, sizeof(idt_entry) * 256);
 
     set_idt_gate(0, (uint32_t)isr0, KERNEL_CS, (uint8_t)FLAG);
-
-    set_idt_gate(0, (uint32_t)isr0, KERNEL_CS, (uint8_t)FLAG);
     set_idt_gate(1, (uint32_t)isr1, KERNEL_CS, (uint8_t)FLAG);
     set_idt_gate(2, (uint32_t)isr2, KERNEL_CS, (uint8_t)FLAG);
     set_idt_gate(3, (uint32_t)isr3, KERNEL_CS, (uint8_t)FLAG);
