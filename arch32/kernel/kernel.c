@@ -7,6 +7,7 @@
 #include <arch32/idt.h>
 #include <arch32/exceptions.h>
 #include <arch32/timer.h>
+#include <arch32/keyboard.h>
 
 volatile uint16_t* vga_buffer = (uint16_t*)0xB8000;
 
@@ -21,10 +22,11 @@ void kernel_main(void) {
     init_idt();
     install_exception_handlers();
     init_pit(100);
-
+    init_keyboard();
     asm volatile("sti"); // starts the intrrupts
-    ksleep(5);
+    ksleep(1);
+    for ( ; ; );
     //volatile int16_t z= 0;
     //volatile int16_t a = 4/z;
-    asm volatile("ud2"); //send invalid opcode
+    //asm volatile("ud2"); //send invalid opcode
 }

@@ -23,7 +23,7 @@ void vga_clear_screen() {
 }
 
 void vga_new_line() {
-    if (line < HEIGHT) {
+    if (line < HEIGHT - 1) {
         column=0;
         line++;
     }else {
@@ -39,6 +39,11 @@ void vga_scroll_up(){
         }
     }
 
+    for (uint16_t x = 0; x < WIDTH; x++) {
+        vgabuffer[(HEIGHT - 1) * WIDTH + x] = 
+            (uint16_t)' ' | ((uint16_t)cur_color << 8);
+        }
+
 }
 
 void vga_set_color(const uint16_t color) {
@@ -46,9 +51,13 @@ void vga_set_color(const uint16_t color) {
 }
 
 void vga_putchar(const char c){
-    if (column == WIDTH || c =='\n') {
+    if (c =='\n') {
         vga_new_line();
         return;
+    }
+
+    if (column >= WIDTH) {
+        vga_new_line();
     }
 
     vgabuffer[line * WIDTH + column] =
