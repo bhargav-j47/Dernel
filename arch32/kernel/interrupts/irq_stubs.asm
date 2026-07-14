@@ -35,7 +35,9 @@ irq_common_stub:
     mov fs, ax
     mov gs, ax
 
+    push esp            ; push pointer to int_registers_t
     call irq_handler
+    add esp, 4          ; clean up pointer argument
 
     pop eax
     mov ds, ax

@@ -26,6 +26,9 @@ void handle_exception(int_registers_t* regs) {
     if(regs->int_no < 32) {
         printk("%s", exception_messages[regs->int_no]);
     }
+    while(1) {
+        asm volatile("hlt");
+    }
 }
 
 void install_exception_handlers() {
