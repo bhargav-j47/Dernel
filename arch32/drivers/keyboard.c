@@ -3,6 +3,7 @@
 #include <arch32/isr.h>
 #include <lib/printk.h>
 #include <arch32/io.h>
+#include <arch32/vga.h>
 
 static const char scancode_ascii_lower[128] = {
     /* 0x00 */ KEY_UNKNOWN, 27 /*ESC*/, '1','2','3','4','5','6','7','8','9','0','-','=','\b',
@@ -145,7 +146,7 @@ void print_inp() {
         if (code == KEY_RSHIFT || code == KEY_LSHIFT) {
             if (released) 
                 is_shift = 0;
-             else 
+            else 
                 is_shift = 1;
             continue;
         }
@@ -154,6 +155,11 @@ void print_inp() {
             if (released == 0) 
                 is_caps = 0 ? is_caps : 1;
             continue;
+        }
+
+        if (code == KEY_BACKSPACE && released == 0) {
+              vga_rmchar();
+              continue;
         }
 
         if ( code < 128 && released == 0) {

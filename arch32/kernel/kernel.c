@@ -24,6 +24,7 @@ void kernel_main(void) {
     init_pit(100);
     init_keyboard();
     asm volatile("sti"); // starts the intrrupts
+    printk("Harshit loves Bhargav %d",3000);
     ksleep(1);
     for ( ; ; );
     //volatile int16_t z= 0;

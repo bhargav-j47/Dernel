@@ -22,3 +22,4 @@ void vga_scroll_up();
 void vga_scroll_down();
 void vga_clear_screen();
 void vga_putchar(const char c);
+void vga_rmchar();

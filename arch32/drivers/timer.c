@@ -51,7 +51,7 @@ void init_pit(uint32_t freq) {
     outb(PIT_CHANNEL0, (divisor >> 8) & 0xFF);
 }
 
-void ksleep(uint32_t t){
+void ksleep(uint32_t t) {
     uint32_t end_tick = tick + (t * pit_frequency);
     
     while (tick < end_tick) {

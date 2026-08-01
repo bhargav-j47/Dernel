@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <arch32/vga.h>
 #include <stdarg.h>
+#include <lib/math.h>
 
 volatile uint16_t* vgabuffer = (uint16_t*) 0xB8000;
 uint16_t def_color = (BLACK << 4) | (DARK_GREY);
@@ -50,7 +51,7 @@ void vga_set_color(const uint16_t color) {
     cur_color = color;
 }
 
-void vga_putchar(const char c){
+void vga_putchar(const char c) {
     if (c =='\n') {
         vga_new_line();
         return;
@@ -66,3 +67,8 @@ void vga_putchar(const char c){
     column++;
 }
 
+void vga_rmchar() {
+    column = max(0, column-1);
+    vgabuffer[line * WIDTH + column] =
+        (uint16_t)' ' | ((uint16_t)def_color << 8);
+}
