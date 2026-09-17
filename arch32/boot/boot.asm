@@ -6,6 +6,8 @@ section .text
 _start:
     cli
     mov esp, stack_top      ;mov stack pointer to stack_top
+    push ebx                ;mulitboot info ptr
+    push eax                ;multiboot magic
     call kernel_main
     hlt
 HLT_kernel:

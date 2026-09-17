@@ -8,10 +8,11 @@
 #include <arch32/exceptions.h>
 #include <arch32/timer.h>
 #include <arch32/keyboard.h>
+#include <arch32/pmm.h>
 
 volatile uint16_t* vga_buffer = (uint16_t*)0xB8000;
 
-void kernel_main(void) {
+void kernel_main(uint32_t magic, uint32_t mbinfo_ptr) {
 
     const char* strg =
         "dernel loaded successfully";
@@ -23,6 +24,7 @@ void kernel_main(void) {
     install_exception_handlers();
     init_pit(100);
     init_keyboard();
+    pmm_init(magic, mbinfo_ptr);
     asm volatile("sti"); // starts the intrrupts
     printk("Harshit loves Bhargav %d",3000);
     ksleep(1);
