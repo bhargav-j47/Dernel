@@ -4,6 +4,23 @@
 #include <arch32/pmm.h>
 #include <lib/kstring.h>
 
+static uint8_t* pmm_bitmap = NULL;
+static uint32_t pmm_total_frames;
+static uint32_t pmm_used_frames = 0;
+
+// Helper macros for bitwise operations
+static inline void bitmap_set(uint32_t frame) {
+    pmm_bitmap[frame / BLOCKS_PER_BYTE] |= (1 << (frame % BLOCKS_PER_BYTE));
+}
+
+static inline void bitmap_clear(uint32_t frame) {
+    pmm_bitmap[frame / BLOCKS_PER_BYTE] &= ~(1 << (frame % BLOCKS_PER_BYTE));
+}
+
+static inline bool bitmap_test(uint32_t frame) {
+    return pmm_bitmap[frame / BLOCKS_PER_BYTE] & (1 << (frame % BLOCKS_PER_BYTE));
+}
+
 void pmm_init_region(uint64_t start_addr, uint64_t length);
 
 void pmm_init_region(uint64_t start_addr, uint64_t length) {
@@ -93,6 +110,7 @@ void pmm_init(uint32_t magic, uint32_t mbinfo_ptr) {
 
     for (uint32_t i = kernel_start_frame; i <= kernel_end_frame; i++) {
         bitmap_set(i);
+        pmm_used_frames++;
     }
 
     return;
@@ -117,6 +135,7 @@ void* pmm_alloc_frame() {
             }
 
             bitmap_set(frame_idx);
+            pmm_used_frames++;
 
             // convert to physical addr and return
             return (void*)(frame_idx * PAGE_SIZE);
@@ -135,5 +154,5 @@ void pmm_free_frame(void *frame) {
     }
 
     bitmap_clear(frame_idx);
+    pmm_used_frames--;
 }
-
