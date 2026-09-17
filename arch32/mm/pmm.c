@@ -93,9 +93,20 @@ void pmm_init(uint32_t magic, uint32_t mbinfo_ptr) {
     uint32_t kernel_end = (uint32_t)&_kernel_end;
     kernel_end = (kernel_end + PAGE_SIZE -1) & ~(PAGE_SIZE -1);
 
+    /* 
+     * This is because pmm_bitmap array should not 
+     * overwrite the multiboot info itself
+     * If GRUB placed the multiboot data after kernel,
+     * push the kernel_end forward so we don't overwrite it!
+     */
+    uint32_t mb_size = *(uint32_t*)mbinfo_ptr;
+    uint32_t mb_end = mbinfo_ptr + mb_size;
+    if (mb_end > kernel_end) {
+        kernel_end = mb_end;
+    }
+
     pmm_total_frames = (4ULL * 1024 * 1024 * 1024) / PAGE_SIZE; // 4 GB
     uint32_t bitmap_size = pmm_total_frames / BLOCKS_PER_BYTE;
-
     pmm_bitmap = (uint8_t*) kernel_end;
 
     //set all as used

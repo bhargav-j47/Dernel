@@ -14,8 +14,7 @@ volatile uint16_t* vga_buffer = (uint16_t*)0xB8000;
 
 void kernel_main(uint32_t magic, uint32_t mbinfo_ptr) {
 
-    const char* strg =
-        "dernel loaded successfully";
+    const char* strg = "dernel loaded successfully";
     vga_clear_screen();
     vga_set_color(GREEN | BLACK << 4);
     printk("Hii Bhargav here\n%s %d\n", strg, -43 );
@@ -26,7 +25,6 @@ void kernel_main(uint32_t magic, uint32_t mbinfo_ptr) {
     init_keyboard();
     pmm_init(magic, mbinfo_ptr);
     asm volatile("sti"); // starts the intrrupts
-    printk("Harshit loves Bhargav %d",3000);
     ksleep(1);
     for ( ; ; );
     //volatile int16_t z= 0;
