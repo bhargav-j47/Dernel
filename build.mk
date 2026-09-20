@@ -27,7 +27,7 @@ built-in.o: $(obj-y-files) $(subdir-y)
 # Compile Assembly files
 %.o: %.asm
 	@echo "  AS      $(CURDIR)/$@"
-	@$(AS) $(ASFLAGS) $< -o $@
+	@$(AS) $(ASFLAGS) -g $< -o $@
 
 clean:
 	@rm -f *.o built-in.o
