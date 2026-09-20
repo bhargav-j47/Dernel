@@ -3,7 +3,7 @@
 #include <stdarg.h>
 #include <lib/math.h>
 
-volatile uint16_t* vgabuffer = (uint16_t*) 0xB8000;
+volatile uint16_t* vgabuffer = (uint16_t*) 0xC00B8000;
 uint16_t def_color = (BLACK << 4) | (DARK_GREY);
 uint16_t cur_color;
 
