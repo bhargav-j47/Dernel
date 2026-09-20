@@ -116,14 +116,14 @@ static const char scancode_ascii_upper[128] = {
 uint8_t is_shift = 0;
 uint8_t is_caps = 0;
 
-inp_buff_t* kbuff;
+static inp_buff_t kbuff;
 
 void keyboard_handler(int_registers_t* regs);
 
 void init_keyboard() {
     printk("initializing keyboard\n");
     install_interrupt_handler(33, keyboard_handler);
-    krb_init(kbuff);
+    krb_init(&kbuff);
     printk("keyboard is up\n");
 
 }
@@ -131,7 +131,7 @@ void init_keyboard() {
 void keyboard_handler(int_registers_t* regs) {
     
     uint8_t rv = inb(0x60);
-    krb_push(kbuff, rv);
+    krb_push(&kbuff, rv);
 
     print_inp();  //for now
 }
@@ -139,7 +139,7 @@ void keyboard_handler(int_registers_t* regs) {
 void print_inp() {
     uint8_t sc = 0;
 
-    while (!krb_pop(kbuff, &sc)) {
+    while (!krb_pop(&kbuff, &sc)) {
         uint8_t code = GET_MAKE_CODE(sc);
         uint8_t released = IS_KEY_RELEASE(sc);
 
