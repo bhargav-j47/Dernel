@@ -11,10 +11,10 @@
  * let frame 102 is needed so bitmap index is 102/16 and offset is 102%16
  */
 
-#define PAGE_SIZE 4096
+#define FRAME_SIZE 4096
 #define BLOCKS_PER_BYTE 8
 
-void* pmm_alloc_frame();
-void pmm_free_frame(void* frame);
+uint32_t pmm_alloc_frame();
+void pmm_free_frame(uint32_t frame);
 
-void pmm_init(uint32_t magic, uint32_t mbinfo_ptr);
+void init_pmm(uint32_t magic, uint32_t mbinfo_ptr);

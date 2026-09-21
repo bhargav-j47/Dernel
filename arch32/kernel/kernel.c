@@ -9,6 +9,7 @@
 #include <arch32/timer.h>
 #include <arch32/keyboard.h>
 #include <arch32/pmm.h>
+#include <arch32/memory.h>
 
 volatile uint16_t* vga_buffer = (uint16_t*)0xB8000;
 
@@ -24,7 +25,7 @@ void kernel_main(uint32_t magic, uint32_t mbinfo_ptr) {
     init_pit(100);
     init_keyboard();
     uint32_t v_mbinfo_ptr = mbinfo_ptr + (uint32_t)0xC0000000;
-    pmm_init(magic, v_mbinfo_ptr);
+    init_memory(magic, v_mbinfo_ptr);
     asm volatile("sti"); // starts the intrrupts
     ksleep(1);
     for ( ; ; );
