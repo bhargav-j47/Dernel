@@ -1,4 +1,5 @@
 global _start
+global boot_page_dir
 
 extern kernel_main
 

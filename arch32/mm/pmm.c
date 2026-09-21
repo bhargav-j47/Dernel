@@ -83,7 +83,7 @@ extern uint32_t* _kernel_start;
 
 void init_pmm(uint32_t magic, uint32_t mbinfo_ptr) {
 
-    printk("initializing physical memory");
+    printk("initializing physical memory\n");
 
     /*
      * round kernel end addr to next 4kb

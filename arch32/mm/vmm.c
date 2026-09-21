@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <arch32/pmm.h>
 #include <arch32/vmm.h>
-#include "lib/printk.h"
+#include <lib/printk.h>
 
 // Extracts Page Directory Index
 #define PG_DIR_INDEX(address) ((address) >> 22)
@@ -99,7 +99,7 @@ void vmm_free_page(uint32_t page) {
 }
 
 void init_vmm() {
-    printk("initializing virtual memory");
+    printk("initializing virtual memory\n");
 
     // get the current physical frame of boot_page_dir from cr3
     uint32_t pd_frame;
