@@ -23,7 +23,8 @@ void kernel_main(uint32_t magic, uint32_t mbinfo_ptr) {
     install_exception_handlers();
     init_pit(100);
     init_keyboard();
-    pmm_init(magic, mbinfo_ptr);
+    uint32_t v_mbinfo_ptr = mbinfo_ptr + (uint32_t)0xC0000000;
+    pmm_init(magic, v_mbinfo_ptr);
     asm volatile("sti"); // starts the intrrupts
     ksleep(1);
     for ( ; ; );
