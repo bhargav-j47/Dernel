@@ -10,7 +10,7 @@ export LD 	  := $(CPATH)/$(TARGET)-ld
 export TOPDIR := $(CURDIR)
 export INC_DIR:= $(TOPDIR)/include
 
-export CFLAGS := -std=gnu99 -ffreestanding -O2 -Wall -Wextra -I$(INC_DIR) -g
+export CFLAGS := -std=gnu99 -masm=intel -ffreestanding -O2 -Wall -Wextra -I$(INC_DIR) -g
 export ASFLAGS:= -f elf32
 export LDFLAGS:= -T linker.ld -ffreestanding -O2 -nostdlib
 
