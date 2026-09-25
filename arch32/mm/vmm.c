@@ -39,7 +39,7 @@ void vmm_map_page(uint32_t page, uint32_t frame, uint32_t flags) {
         uint32_t* pg_tbl_virt_addr = (uint32_t*)(0xFFC00000 + (pg_dir_idx * 4096));
 
         // flush tlb
-        asm volatile("invlpg [%0]" :: "r" (0xFFFFF000) : "memory");
+        asm volatile("invlpg [%0]" :: "r" (page) : "memory");
 
         // zero out whole page table
         for (int i = 0; i < 1024; i++) {
@@ -51,7 +51,7 @@ void vmm_map_page(uint32_t page, uint32_t frame, uint32_t flags) {
     pg_tbl[pg_tbl_idx] = frame | PG_OFFSET(flags);
 
     // flush tlb
-    asm volatile("invlpg [%0]" :: "r" (0xFFFFF000) : "memory");
+    asm volatile("invlpg [%0]" :: "r" (page) : "memory");
 }
 
 void vmm_unmap_page(uint32_t page) {
@@ -65,7 +65,7 @@ void vmm_unmap_page(uint32_t page) {
     uint32_t* pg_tbl   = (uint32_t*)(0xFFC00000 + (pg_dir_idx * 4096));
     pg_tbl[pg_tbl_idx] = 0;
 
-    asm volatile("invlpg [%0]" :: "r" (0xFFFFF000) : "memory");
+    asm volatile("invlpg [%0]" :: "r" (page) : "memory");
 }
 
 void vmm_alloc_page(uint32_t page, uint32_t flags) {
