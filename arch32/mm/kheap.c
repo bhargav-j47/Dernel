@@ -51,12 +51,12 @@ void* kmalloc(uint32_t size) {
     size = (size + 15) & ~15;
     heap_mem_struct* iter = heap_head;
 
-    while (iter->next != NULL) {
+    while (iter != NULL) {
         if(iter->isfree && iter->size >= size) {
 
             // if free block is larger than what we want then split them into two
             if (iter->size > size + sizeof(heap_mem_struct) + 4 ) {
-                uint32_t new_block_addr = current_heap_addr + sizeof(heap_mem_struct)
+                uint32_t new_block_addr = (uint32_t)iter + sizeof(heap_mem_struct)
                                             + size;
                 heap_mem_struct* new_block = (heap_mem_struct*) new_block_addr;
                 new_block->magic = HEAP_MAGIC;
