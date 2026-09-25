@@ -80,6 +80,7 @@ int parse_multiboot(uint32_t magic, uint32_t mbinfo_ptr) {
 
 extern uint32_t* _kernel_end;
 extern uint32_t* _kernel_start;
+uint32_t pmm_bitmap_size;
 
 void init_pmm(uint32_t magic, uint32_t mbinfo_ptr) {
 
@@ -106,37 +107,41 @@ void init_pmm(uint32_t magic, uint32_t mbinfo_ptr) {
     }
 
     pmm_total_frames = (4ULL * 1024 * 1024 * 1024) / FRAME_SIZE; // 4 GB
-    uint32_t bitmap_size = pmm_total_frames / BLOCKS_PER_BYTE;
+    pmm_bitmap_size = pmm_total_frames / BLOCKS_PER_BYTE;
     pmm_bitmap = (uint8_t*) kernel_end;
 
     //set all as used
-    kmemset(pmm_bitmap, 0xFF, bitmap_size);
+    kmemset(pmm_bitmap, 0xFF, pmm_bitmap_size);
 
     //parse memory map
     parse_multiboot(magic, mbinfo_ptr);
 
     //reserve the used kernel memory
-    uint32_t kernel_start_frame = kernel_start / FRAME_SIZE;
-    uint32_t kernel_end_frame = (kernel_end + bitmap_size) / FRAME_SIZE;
+    uint32_t phys_kernel_start = (uint32_t) kernel_start - 0xC0000000 ;
+    uint32_t phys_kernel_end =  (uint32_t) kernel_end - 0xC0000000;
+    uint32_t kernel_start_frame = phys_kernel_start / FRAME_SIZE;
+    uint32_t kernel_end_frame = (phys_kernel_end + pmm_bitmap_size) / FRAME_SIZE;
 
     for (uint32_t i = kernel_start_frame; i <= kernel_end_frame; i++) {
         bitmap_set(i);
         pmm_used_frames++;
     }
 
-    return;
+    //reserve the first 1mb though bios reserves it but it lefts first 640kb
+    //as free which make pmm_alloc_frame to return 0th frame index which is 
+    //used for error so we explicitely reserve 1st mb
+    for (uint32_t i =0; i < 256; i++) {
+        bitmap_set(i);
+        pmm_used_frames++;
+    }   
 }
 
 uint32_t pmm_alloc_frame() {
     // iterate to check free frame and allocate and return it
     for (uint32_t i=0; i < pmm_total_frames/BLOCKS_PER_BYTE; i++) {
 
-        printk("%d", pmm_bitmap[i]);
-
         //if 0xFF means 11111111 so all 8 frames are used
-        if(pmm_bitmap[i] == 0xFF) {
-            continue;
-        }
+        if(pmm_bitmap[i] == 0xFF) continue;
 
         //find free frame from exact 8 frames
         for (uint32_t bit=0; bit < 8; bit++) {
@@ -153,9 +158,6 @@ uint32_t pmm_alloc_frame() {
             bitmap_set(frame_idx);
             pmm_used_frames++;
 
-            printk("%d \n", pmm_used_frames);
-            printk("%d \n", pmm_total_frames);
-            printk("%d, %d \n",frame_idx, (uint32_t)(frame_idx * FRAME_SIZE));
             // convert to physical addr and return
             return (uint32_t)(frame_idx * FRAME_SIZE);
         }
