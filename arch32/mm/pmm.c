@@ -131,8 +131,12 @@ uint32_t pmm_alloc_frame() {
     // iterate to check free frame and allocate and return it
     for (uint32_t i=0; i < pmm_total_frames/BLOCKS_PER_BYTE; i++) {
 
+        printk("%d", pmm_bitmap[i]);
+
         //if 0xFF means 11111111 so all 8 frames are used
-        if(pmm_bitmap[i] == 0xFF) continue;
+        if(pmm_bitmap[i] == 0xFF) {
+            continue;
+        }
 
         //find free frame from exact 8 frames
         for (uint32_t bit=0; bit < 8; bit++) {
@@ -142,12 +146,16 @@ uint32_t pmm_alloc_frame() {
             uint32_t frame_idx = (i * BLOCKS_PER_BYTE) + bit;
 
             if (frame_idx >= pmm_total_frames) {
+                printk("%d \n", pmm_total_frames);
                 return 0;
             }
 
             bitmap_set(frame_idx);
             pmm_used_frames++;
 
+            printk("%d \n", pmm_used_frames);
+            printk("%d \n", pmm_total_frames);
+            printk("%d, %d \n",frame_idx, (uint32_t)(frame_idx * FRAME_SIZE));
             // convert to physical addr and return
             return (uint32_t)(frame_idx * FRAME_SIZE);
         }
