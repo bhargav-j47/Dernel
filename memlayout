@@ -1,0 +1,13 @@
+this file explains my custom kernel's memory layout.
+
+I implemented higher half kernel so memory layout is like following:
+(note that every addr here is virtual as paging is enabled)
+
+0x00000000 - 0xBFFFFFFF  : USER SPACE
+0xC0000000 - 0xC00FFFFF  : 1MB UNTOUCHED
+0xC0100000 - _kernel_end : Kernel code & data (also pmm bitmap is stored right after this)
+0xC1000000 - 0xDFFFFFFF  : Kernel Heap
+0xE0000000 - 0xEFFFFFFF  : reserved for MMIO (like vesa)
+0xF0000000 - 0xFFBFFFFF  : kernel stacks and other data
+0xFFC00000 - 0XFFFFFFFF  : PAGE TABLES (recursive paging)
+

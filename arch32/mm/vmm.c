@@ -11,7 +11,7 @@
 #define PG_OFFSET(address) ((address) & 0x0FFF)
 
 extern uint32_t boot_page_dir[];
-uint32_t* page_directory = (uint32_t*) 0xFFFFF000;
+uint32_t* page_directory = (uint32_t*) 0xFFFFF000; // actually points to 0th page table
 
 void vmm_map_page(uint32_t page, uint32_t frame, uint32_t flags);
 void vmm_unmap_page(uint32_t page);
