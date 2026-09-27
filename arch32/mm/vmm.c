@@ -92,7 +92,7 @@ void vmm_free_page(uint32_t page) {
     uint32_t pg_tbl_entry = pg_tbl[pg_tbl_idx];
     
     if (pg_tbl_entry & (PAGE_PRESENT)) {
-        uint32_t frame = pg_tbl_entry | PAGE_FRAME_MASK;
+        uint32_t frame = pg_tbl_entry & PAGE_FRAME_MASK;
         pmm_free_frame(frame);
         vmm_unmap_page(page);
     }
