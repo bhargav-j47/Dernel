@@ -101,7 +101,7 @@ void kfree(void *ptr) {
             //helpful if heap is broken into pieces
             uint32_t expected_addr = (uint32_t)iter + sizeof(heap_mem_struct) + iter->size;
             if (expected_addr == (uint32_t)iter->next) {
-                iter->size = iter->next->size + sizeof(heap_mem_struct);
+                iter->size += iter->next->size + sizeof(heap_mem_struct);
                 iter->next = iter->next->next;
                 continue;
             }
@@ -116,5 +116,5 @@ void init_kheap(uint32_t _heap_start) {
     current_heap_addr = heap_start;
     heap_head = NULL;
     // allocate 1Mb heap at start
-    expand_heap(4000);
+    expand_heap(1024 * 1024);
 }
