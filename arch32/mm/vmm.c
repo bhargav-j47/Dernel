@@ -39,7 +39,7 @@ void vmm_map_page(uint32_t page, uint32_t frame, uint32_t flags) {
         uint32_t* pg_tbl_virt_addr = (uint32_t*)(0xFFC00000 + (pg_dir_idx * 4096));
 
         // flush tlb
-        asm volatile("invlpg [%0]" :: "r" (page) : "memory");
+        asm volatile("invlpg [%0]" :: "r" (pg_tbl_virt_addr) : "memory");
 
         // zero out whole page table
         for (int i = 0; i < 1024; i++) {
