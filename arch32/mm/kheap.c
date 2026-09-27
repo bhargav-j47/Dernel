@@ -27,7 +27,7 @@ static void expand_heap(uint32_t size) {
     }
     
     heap_mem_struct* new_block = (heap_mem_struct*) expand_start_addr;
-    new_block->size = size;
+    new_block->size = (pages_req * 4096) - sizeof(heap_mem_struct);
     new_block->magic = HEAP_MAGIC;
     new_block->isfree = 1;
     new_block->next = NULL;
