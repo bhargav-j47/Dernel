@@ -31,15 +31,22 @@ void kernel_main(uint32_t magic, uint32_t mbinfo_ptr) {
     ksleep(1);
 
     //try heap
-    uint32_t* new = (uint32_t*) kmalloc(5 * sizeof(uint32_t));
-    new[0] = 1;
-    new[1] = 3;
-    new[2] = 6;
-    new[3] = 9;
-    new[4] = 323;
+    uint32_t* old = (uint32_t*) kmalloc(5 * sizeof(uint32_t));
+    old[0] = 1;
+    old[1] = 3;
+    old[2] = 6;
+    old[3] = 9;
+    old[4] = 323;
     
     for (int i = 0; i < 5; i++) {
-        printk("no is: %d \n",new[i]);
+        printk("old addr no is: %d \n",old + i);
+    }
+    //kfree(old);
+
+    uint32_t* new = (uint32_t*) kmalloc(5 * sizeof(uint32_t));
+
+    for (int i = 0; i < 5; i++) {
+        printk("no is: %d \n",new + i);
     }
 
     for ( ; ; );

@@ -2,6 +2,7 @@
 #include <arch32/pmm.h>
 #include <arch32/vmm.h>
 #include <arch32/kheap.h>
+#include "lib/printk.h"
 
 uint32_t heap_start;
 uint32_t current_heap_addr;
@@ -40,8 +41,7 @@ static void expand_heap(uint32_t size) {
     while (iter->next != NULL) {
         iter = iter->next;
     }
-
-    iter->next =  new_block;
+    iter->next = new_block;
 }
 
 void* kmalloc(uint32_t size) {
@@ -67,15 +67,12 @@ void* kmalloc(uint32_t size) {
                 iter->size = size;
                 iter->next = new_block;
             }
-
             // now mark current block as used and return memory addr
             iter->isfree = 0;
             return (void*)(uint32_t)iter + sizeof(heap_mem_struct);
         }
-
         iter = iter->next;
     }
-
     //if we came here then no free block is there in current heap so 
     //allocate more space for heap by expanding heap by size
     expand_heap(size);
@@ -85,9 +82,32 @@ void* kmalloc(uint32_t size) {
 
 void kfree(void *ptr) {
     if (ptr == NULL) return;
-    
-    //implement kfree
 
+    heap_mem_struct* block = (heap_mem_struct*)((uint32_t) ptr - sizeof(heap_mem_struct));
+
+    if(block->magic != HEAP_MAGIC){
+        //this block was corrupted
+        printk("kernel panic: heap is corrupted");
+        return;
+    }
+    
+    block->isfree = 1;
+    
+    //merge multiple blocks if possiblet 
+    heap_mem_struct* iter = heap_head;
+    while (iter != NULL && iter->next != NULL) {
+        if (iter->isfree && iter->next->isfree) {
+            //just check if two blocks we want to merge are virtually continuous or not
+            //helpful if heap is broken into pieces
+            uint32_t expected_addr = (uint32_t)iter + sizeof(heap_mem_struct) + iter->size;
+            if (expected_addr == (uint32_t)iter->next) {
+                iter->size = iter->next->size + sizeof(heap_mem_struct);
+                iter->next = iter->next->next;
+                continue;
+            }
+        } 
+        iter = iter->next;
+    }
 }
 
 void init_kheap(uint32_t _heap_start) {
@@ -95,8 +115,6 @@ void init_kheap(uint32_t _heap_start) {
     heap_end = heap_start + (256 * 1024 * 1024);
     current_heap_addr = heap_start;
     heap_head = NULL;
-    
     // allocate 1Mb heap at start
     expand_heap(4000);
 }
-
