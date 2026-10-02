@@ -16,11 +16,17 @@ static void expand_heap(uint32_t size) {
     //total size will actual heap needed + linked list struct overhead
     uint32_t total_size = size + sizeof(heap_mem_struct);
     //calcualte no of pages by aligning to 4k
-    uint32_t pages_req = (total_size + 4095) / 4096; 
-    
+    uint32_t pages_req = (total_size + 4095) / 4096;
+
+    if (current_heap_addr + total_size >= heap_end) {
+        printk("panic: kernel has exceeded its heap capacity");
+        return;
+    }
+
     uint32_t expand_start_addr = current_heap_addr;
 
     for (uint32_t i=0; i < pages_req; i++) {
+        
         //allocate page and move current_heap_addr
         vmm_alloc_page(current_heap_addr, PAGE_WRITE | PAGE_PRESENT);
         current_heap_addr += 4096;

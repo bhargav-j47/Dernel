@@ -10,7 +10,7 @@ header_start:
     ;checksum x100000000 is to avoid compiler warnings 
     dd 0x100000000 - (0xe85250d6 + 0 + (header_end - header_start))
 
-    ;end tags 
+    ;end tag
     dd 0                            ; type
     dd 0                            ; flags
     dd 8                            ; size
