@@ -1,0 +1,14 @@
+VESA driver
+Storage driver
+Fat fs
+VFS layer
+SYSCALLS
+ELF loader
+Task struct
+USER MODE JUMP
+minimal libc
+port doomgeneric
+multitasking & schedular
+Simple Shell
+
+
