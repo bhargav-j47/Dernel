@@ -2,6 +2,7 @@
 #include <arch32/pmm.h>
 #include <arch32/vmm.h>
 #include <lib/printk.h>
+#include <arch32/memory.h>
 
 // Extracts Page Directory Index
 #define PG_DIR_INDEX(address) ((address) >> 22)
@@ -96,6 +97,33 @@ void vmm_free_page(uint32_t page) {
         pmm_free_frame(frame);
         vmm_unmap_page(page);
     }
+}
+
+static uint32_t mmio_curr_virt = MEM_MMIO_START;
+
+void* vmm_map_mmio(uint32_t phys_addr, uint32_t size) {
+    //align to 4kb and get offset for later as well
+    uint32_t offset     = phys_addr & (PAGE_SIZE - 1);
+    uint32_t phys_start = phys_addr - offset;
+
+    // Round total size (including offset) up to the nearest 4KB page multiple
+    uint32_t total_size = (size + offset + PAGE_SIZE - 1) & ~(PAGE_SIZE - 1);
+
+    if (mmio_curr_virt + total_size > MEM_MMIO_END) {
+        //panic Out of MMIO virtual address space!
+        return NULL;
+    }
+
+    uint32_t virt_base = mmio_curr_virt;
+
+    // Map each 4KB page and advance the global MMIO pointer
+    for (uint32_t i = 0; i < total_size; i += PAGE_SIZE) {
+        vmm_map_page(mmio_curr_virt, phys_start + i, (PAGE_PRESENT | PAGE_WRITE |
+                                                    PAGE_CACHE_DISABLE));
+        mmio_curr_virt += PAGE_SIZE;
+    }
+
+    return (void*)(virt_base + offset);
 }
 
 void init_vmm() {

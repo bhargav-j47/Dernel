@@ -4,6 +4,7 @@
 #include <arch32/kheap.h>
 #include <lib/kstring.h>
 #include <lib/printk.h>
+#include "arch32/vmm.h"
 
 volatile uint8_t is_fb_avl = 0;
 static vesa_display display;
@@ -40,6 +41,18 @@ void init_vesa(uint32_t magic, uint32_t mbinfo_ptr) {
         //panic 
         return;
     }
+
+    // frontbuff_addr passed by multiboot2 is physical and not virtual
+    // so map it to virtual mmio
+    //
+    dis->frontbuff_addr =
+        (uint8_t*)vmm_map_mmio((uint32_t)dis->frontbuff_addr, dis->buff_size);
+
+    if(dis->frontbuff_addr == NULL) {
+        //panic
+        return;
+    }
+
     dis->backbuff_addr = (uint8_t*)kmalloc(dis->buff_size);
     if (dis->backbuff_addr == NULL) {
         //panic

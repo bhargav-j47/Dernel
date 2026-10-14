@@ -18,5 +18,6 @@
 
 void init_vmm();
 
+void* vmm_map_mmio(uint32_t phys_addr, uint32_t size);
 void vmm_alloc_page(uint32_t page, uint32_t flags);
 void vmm_free_page(uint32_t page);
