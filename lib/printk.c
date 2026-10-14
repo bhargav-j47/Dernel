@@ -1,6 +1,7 @@
 #include <lib/printk.h>
 #include <stdint.h>
 #include <arch32/vga.h>
+#include <arch32/io.h>
 #include <stdarg.h>
 
 
@@ -96,15 +97,16 @@ err:
 }
 
 
-extern void vga_putchar(char c);
+//extern void vga_putchar(char c);
 
 // Flushes the memory buffer to the active hardware console
 void console_flush() {
     while (log_read_ptr != log_write_ptr) {
         char c = kernel_log[log_read_ptr];
         
-        vga_putchar(c); // Send to x86 VGA
-        
+        //vga_putchar(c); // Send to x86 VGA
+        serial_putchar(c); // send to serial port
+
         log_read_ptr = (log_read_ptr + 1) % KERNEL_LOG_SIZE;
     }
 }

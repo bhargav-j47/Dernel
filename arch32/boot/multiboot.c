@@ -10,7 +10,7 @@ int parse_mem_multiboot(uint32_t magic, uint32_t mbinfo_ptr) {
         return -2;
     }
 
-    multiboot_tag *tag = (multiboot_tag*)(mbinfo_ptr + 8);
+    multiboot_tag* tag = (multiboot_tag*)(mbinfo_ptr + 8);
 
     while (tag->type != MULTIBOOT_TAG_TYPE_END) {
         if (tag->type == MULTIBOOT_TAG_TYPE_MEMMAP) {
@@ -38,3 +38,24 @@ int parse_mem_multiboot(uint32_t magic, uint32_t mbinfo_ptr) {
     return 0;
 }
 
+int parse_framebuff_multiboot(uint32_t magic, uint32_t mbinfo_ptr) {
+    
+    if (magic != MULTIBOOT2_MAGIC) {
+        printk("multiboot bad magic address: %d",magic);
+        return -2;
+    }
+
+    multiboot_tag* tag = (multiboot_tag*)(mbinfo_ptr + 8);
+    while (tag->type != MULTIBOOT_TAG_TYPE_END) {
+        if (tag->type == MULTIBOOT_TAG_TYPE_FRAMEBUFF) {
+                printk("grub is sending framebuffer ok");
+                multiboot_tag_framebuff* ftag = (multiboot_tag_framebuff*)tag;
+                printk("%d\n",ftag->width);
+                printk("%d\n",ftag->width);
+                break;
+        }
+        // tags are 8 bit aligned so round current size to next mulitple of 8;
+        tag = (multiboot_tag*)((uint8_t*)tag + ((tag->size + 7) & ~7));
+    }
+    return 0;
+}

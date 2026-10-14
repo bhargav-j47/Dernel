@@ -34,3 +34,8 @@ uint32_t inl(uint16_t port) {
 void io_wait(void) {
     asm volatile ("out 0x80, al" : : "a"(0));
 }
+
+void serial_putchar(char c) {
+    while ((inb(0x3F8 + 5) & 0x20) == 0); // Wait for transmit buffer empty
+    outb(0x3F8, c);
+}
