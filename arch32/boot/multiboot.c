@@ -2,6 +2,7 @@
 #include <lib/printk.h>
 #include <arch32/multiboot.h>
 #include <arch32/pmm.h>
+#include "arch32/vesa.h"
 
 int parse_mem_multiboot(uint32_t magic, uint32_t mbinfo_ptr) {
 
@@ -38,7 +39,7 @@ int parse_mem_multiboot(uint32_t magic, uint32_t mbinfo_ptr) {
     return 0;
 }
 
-int parse_framebuff_multiboot(uint32_t magic, uint32_t mbinfo_ptr) {
+int parse_framebuff_multiboot(uint32_t magic, uint32_t mbinfo_ptr, vesa_display* dis) {
     
     if (magic != MULTIBOOT2_MAGIC) {
         printk("multiboot bad magic address: %d",magic);
@@ -48,10 +49,19 @@ int parse_framebuff_multiboot(uint32_t magic, uint32_t mbinfo_ptr) {
     multiboot_tag* tag = (multiboot_tag*)(mbinfo_ptr + 8);
     while (tag->type != MULTIBOOT_TAG_TYPE_END) {
         if (tag->type == MULTIBOOT_TAG_TYPE_FRAMEBUFF) {
-                printk("grub is sending framebuffer ok");
                 multiboot_tag_framebuff* ftag = (multiboot_tag_framebuff*)tag;
-                printk("%d\n",ftag->width);
-                printk("%d\n",ftag->width);
+                if (ftag->fb_type != 1) {
+                    return -2;
+                }
+                dis->width = (uint32_t)ftag->width;
+                dis->height = (uint32_t)ftag->height;
+                dis->depth = (uint32_t)ftag->bpp;
+                dis->pitch = (uint32_t)ftag->pitch;
+                dis->buff_size = (uint32_t)(ftag->height * ftag->pitch);
+
+                printk("%d\n", ftag->addr);
+                // not this simple dis->frontbuff_addr = (uint8_t*) ftag->addr;
+
                 break;
         }
         // tags are 8 bit aligned so round current size to next mulitple of 8;

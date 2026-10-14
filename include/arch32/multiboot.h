@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include "arch32/vesa.h"
 
 #define MULTIBOOT2_MAGIC 0x36d76289
 #define MULTIBOOT_TAG_TYPE_END 0
@@ -39,10 +40,10 @@ typedef struct {
     uint32_t pitch;             // Bytes per scanline (Wait! Use pitch, not width * 4)
     uint32_t width;             // Pixels per row
     uint32_t height;            // Pixels per column
-    uint8_t  bpp;               // Bits per pixel (usually 32)
-    uint8_t  fb_type;           // 1 = RGB linear framebuffer, 2 = EGA text
+    uint8_t  bpp;               // Bits per pixel / depth (usually 32)
+    uint8_t  fb_type;           // 1 = RGB linear framebuff 2 = EGA text
     uint16_t reserved;
 } __attribute__((packed)) multiboot_tag_framebuff;
 
 int parse_mem_multiboot(uint32_t magic, uint32_t mbinfo_ptr);
-int parse_framebuff_multiboot(uint32_t magic, uint32_t mbinfo_ptr);
+int parse_framebuff_multiboot(uint32_t magic, uint32_t mbinfo_ptr, vesa_display* dis);

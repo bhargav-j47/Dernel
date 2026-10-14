@@ -11,14 +11,15 @@
 #include <arch32/pmm.h>
 #include <arch32/memory.h>
 #include <arch32/kheap.h>
+#include <arch32/vesa.h>
 
 volatile uint16_t* vga_buffer = (uint16_t*)0xB8000;
 
 void kernel_main(uint32_t magic, uint32_t mbinfo_ptr) {
 
     const char* strg = "dernel loaded successfully";
-    vga_clear_screen();
-    vga_set_color(GREEN | BLACK << 4);
+    //vga_clear_screen();
+    //vga_set_color(VGA_GREEN | VGA_BLACK << 4);
     printk("Hii Bhargav here\n%s %d\n", strg, -43 );
     init_gdt();
     init_idt();
@@ -28,6 +29,7 @@ void kernel_main(uint32_t magic, uint32_t mbinfo_ptr) {
     uint32_t v_mbinfo_ptr = mbinfo_ptr + (uint32_t)0xC0000000;
     init_memory(magic, v_mbinfo_ptr);
     asm volatile("sti"); // starts the intrrupts
+    init_vesa(magic, v_mbinfo_ptr);
     ksleep(1);
 
     //try heap

@@ -4,7 +4,7 @@
 #include <lib/math.h>
 
 volatile uint16_t* vgabuffer = (uint16_t*) 0xC00B8000;
-uint16_t def_color = (BLACK << 4) | (DARK_GREY);
+uint16_t def_color = (VGA_BLACK << 4) | (VGA_DARK_GREY);
 uint16_t cur_color;
 
 uint16_t line = 0;

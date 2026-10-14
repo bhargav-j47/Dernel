@@ -3,6 +3,7 @@
 #include <arch32/vga.h>
 #include <arch32/io.h>
 #include <stdarg.h>
+#include "arch32/vesa.h"
 
 
 void print_str(const char* st) {
@@ -106,6 +107,10 @@ void console_flush() {
         
         //vga_putchar(c); // Send to x86 VGA
         serial_putchar(c); // send to serial port
+                           //
+        if (is_fb_avl) {
+            // write to vesa
+        }
 
         log_read_ptr = (log_read_ptr + 1) % KERNEL_LOG_SIZE;
     }
