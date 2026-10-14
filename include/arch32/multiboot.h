@@ -31,4 +31,5 @@ typedef struct {
     multiboot_memmap_entry entries[0]; // Flexible array member
 } __attribute__((packed)) multiboot_tag_memmap;
 
-int parse_multiboot(uint32_t magic, uint32_t mbinfo_ptr);
+int parse_mem_multiboot(uint32_t magic, uint32_t mbinfo_ptr);
+int parse_vesa_multiboot(uint32_t magic, uint32_t mbinfo_ptr);

@@ -19,4 +19,5 @@ extern uint32_t pmm_bitmap_size;
 uint32_t pmm_alloc_frame();
 void pmm_free_frame(uint32_t frame);
 
+void pmm_init_region(uint64_t start_addr, uint64_t length);
 void init_pmm(uint32_t magic, uint32_t mbinfo_ptr);
