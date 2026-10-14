@@ -43,7 +43,7 @@ void pmm_init_region(uint64_t start_addr, uint64_t length) {
     }
 }
 
-int parse_multiboot(uint32_t magic, uint32_t mbinfo_ptr) {
+int parse_mem_multiboot(uint32_t magic, uint32_t mbinfo_ptr) {
 
     if (magic != MULTIBOOT2_MAGIC) {
         printk("multiboot bad magic address: %d",magic);
@@ -114,7 +114,7 @@ void init_pmm(uint32_t magic, uint32_t mbinfo_ptr) {
     kmemset(pmm_bitmap, 0xFF, pmm_bitmap_size);
 
     //parse memory map
-    parse_multiboot(magic, mbinfo_ptr);
+    parse_mem_multiboot(magic, mbinfo_ptr);
 
     //reserve the used kernel memory
     uint32_t phys_kernel_start = (uint32_t) kernel_start - 0xC0000000 ;
