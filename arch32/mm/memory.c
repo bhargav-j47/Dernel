@@ -14,5 +14,7 @@ void init_memory(uint32_t magic, uint32_t mbinfo_ptr) {
     init_vmm();
 
     //setup heap
-    init_kheap(_kernel_end + pmm_bitmap_size);
+    //get the heap base by adding pmm_bitmap_size and aligning to 4KB
+    uint32_t heap_base = ((uint32_t)(&_kernel_end) + pmm_bitmap_size + 4095) & ~4095;
+    init_kheap(heap_base);
 }
