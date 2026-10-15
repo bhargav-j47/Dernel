@@ -58,6 +58,7 @@ int parse_framebuff_multiboot(uint32_t magic, uint32_t mbinfo_ptr, vesa_display*
                 dis->depth = (uint32_t)ftag->bpp;
                 dis->pitch = (uint32_t)ftag->pitch;
                 dis->buff_size = (uint32_t)(ftag->height * ftag->pitch);
+                dis->frontbuff_addr = (uint8_t*)(ftag->addr);
 
                 break;
         }
