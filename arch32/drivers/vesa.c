@@ -62,5 +62,24 @@ void init_vesa(uint32_t magic, uint32_t mbinfo_ptr) {
 
     is_fb_avl = 1; //now vesa display is available
     
+    // Background (Dark Slate)
+    vesa_fill_rect(0, 0, display.width, display.height, 0x001E1E2E);
+
+    // Head Base (Green Square: 320x320)
+    vesa_fill_rect(350, 150, 320, 320, 0x0000AA00);
+
+    // Eyes (Black: 80x80 each)
+    vesa_fill_rect(390, 210, 80, 80, 0x00000000); // Left Eye
+    vesa_fill_rect(550, 210, 80, 80, 0x00000000); // Right Eye
+
+    // Nose (Black: 80x120)
+    vesa_fill_rect(470, 290, 80, 120, 0x00000000);
+
+    // Mouth corners (Black: 40x120 each)
+    vesa_fill_rect(430, 330, 40, 120, 0x00000000); // Left Mouth
+    vesa_fill_rect(550, 330, 40, 120, 0x00000000); // Right Mouth
+
+    vesa_flush();
+
 }
 
