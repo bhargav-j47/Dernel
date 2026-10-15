@@ -36,6 +36,29 @@ void print_uint(uint32_t d) {
     return;
 }
 
+void print_hex(uint32_t num) {
+    const char hex_digits[] = "0123456789ABCDEF";
+    char buffer[8];
+    int i = 0;
+
+    if (num == 0) {
+        buff_putchar('0');
+        return;
+    }
+
+    // Extract 4 bits i.e 1 hex digit at a time 
+    while (num > 0) {
+        buffer[i++] = hex_digits[num & 0xF];
+        num >>= 4;
+    }
+
+    // Print in reverse order i.e most significant digit first)
+    while (i > 0) {
+        i--;
+        buff_putchar(buffer[i]);
+    }
+}
+
 void printk(const char* fmt, ...) {
 
     va_list args;
@@ -72,6 +95,11 @@ void printk(const char* fmt, ...) {
                     case 'c': 
                         c = (char)va_arg(args,int);
                         buff_putchar(c);
+                        break;
+
+                    case 'x':
+                        d = va_arg(args, uint32_t);
+                        print_hex(d);
                         break;
 
                     case '%':

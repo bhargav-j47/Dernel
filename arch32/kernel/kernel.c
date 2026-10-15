@@ -33,6 +33,7 @@ void kernel_main(uint32_t magic, uint32_t mbinfo_ptr) {
     ksleep(1);
 
     //try heap
+    //this is for testing heap, will remove later
     uint32_t* old = (uint32_t*) kmalloc(5 * sizeof(uint32_t));
     old[0] = 1;
     old[1] = 3;
@@ -42,14 +43,20 @@ void kernel_main(uint32_t magic, uint32_t mbinfo_ptr) {
     
     for (int i = 0; i < 5; i++) {
         printk("old addr no is: %d \n",old + i);
+        printk("old value no is: %d \n",*(old + i));
     }
     //kfree(old);
 
     uint32_t* new = (uint32_t*) kmalloc(5 * sizeof(uint32_t));
 
     for (int i = 0; i < 5; i++) {
-        printk("no is: %d \n",new + i);
+        printk("no addr is: %d \n",new + i);
+        printk("no value is: %d \n",*(new + i));
     }
+
+    //cause a page fault for just testing remove later
+    volatile uint32_t* null_ptr = (volatile uint32_t*)0x00000000;
+    *null_ptr = 42;
 
     while (1) {
         asm volatile("hlt");
