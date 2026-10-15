@@ -30,6 +30,11 @@ void kernel_main(uint32_t magic, uint32_t mbinfo_ptr) {
     init_memory(magic, v_mbinfo_ptr);
     asm volatile("sti"); // starts the intrrupts
     init_vesa(magic, v_mbinfo_ptr);
+    vesa_fill_rect(100, 100, 150, 150, VESA_BLUE);
+    vesa_fill_rect(200, 200, 150, 150, VESA_BLUE);
+    vesa_fill_rect(400, 200, 150, 150, VESA_BLUE);
+    vesa_fill_rect(600, 350, 150, 150, VESA_BLUE);
+    vesa_flush();
     ksleep(1);
 
     //try heap
@@ -51,7 +56,9 @@ void kernel_main(uint32_t magic, uint32_t mbinfo_ptr) {
         printk("no is: %d \n",new + i);
     }
 
-    for ( ; ; );
+    while (1) {
+        asm volatile("hlt");
+    }
     //volatile int16_t z= 0;
     //volatile int16_t a = 4/z;
     //asm volatile("ud2"); //send invalid opcode

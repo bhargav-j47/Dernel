@@ -16,7 +16,7 @@ void* kmemcpy(void* dest, const void* src, size_t num) {
     size_t dwords = num >> 2; // num / 4 (number of 32-bit chunks)
     size_t bytes  = num & 3;  // num % 4 (remaining 0-3 bytes)
     
-    __asm__ volatile (
+    asm volatile (
         "cld\n\t"
         "rep movsd\n\t"            // Copy 4 bytes at a time 
         "mov ecx, %[rem]\n\t"

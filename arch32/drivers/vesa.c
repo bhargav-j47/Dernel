@@ -62,8 +62,5 @@ void init_vesa(uint32_t magic, uint32_t mbinfo_ptr) {
 
     is_fb_avl = 1; //now vesa display is available
     
-    //testing time
-    vesa_fill_rect(100, 100, 150, 150, 0x00FF0000); // Pure RED square
-    vesa_flush();
 }
 

@@ -18,6 +18,9 @@ extern volatile uint8_t is_fb_avl;
 void init_vesa(uint32_t magic, uint32_t mbinfo_ptr);
 void vesa_flush(void);
 
+void vesa_fill_rect(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint32_t color);
+void vesa_flush(void);
+
 //32-bit VESA RGB Color Palette (0x00RRGGBB) copied from website
 
 // Helper macro to make custom RGB colors on the fly: VESA_RGB(255, 128, 0)
