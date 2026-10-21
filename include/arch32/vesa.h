@@ -17,9 +17,12 @@ extern volatile uint8_t is_fb_avl;
 
 void init_vesa(uint32_t magic, uint32_t mbinfo_ptr);
 void vesa_flush(void);
-
+void vesa_get_dis_dimensions(uint32_t* width, uint32_t* height);
+void vesa_scroll_up(uint32_t bg_color);
 void vesa_fill_rect(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint32_t color);
 void vesa_flush(void);
+void vesa_put_pixel(uint32_t x, uint32_t y, uint32_t color);
+void vesa_clear_screen();
 
 //32-bit VESA RGB Color Palette (0x00RRGGBB) copied from website
 

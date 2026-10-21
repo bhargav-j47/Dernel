@@ -14,8 +14,8 @@ framebuffer_tag_start:
     dw 5                         ; Type
     dw 0                         ; Flags
     dd framebuffer_tag_end - framebuffer_tag_start ; Size = 20
-    dd 1024                      ; Preferred Width
-    dd 768                       ; Preferred Height
+    dd 1920                      ; Preferred Width
+    dd 1200                      ; Preferred Height
     dd 32                        ; Preferred Depth 
 framebuffer_tag_end:
 

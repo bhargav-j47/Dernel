@@ -1,13 +1,28 @@
+#include <stddef.h>
 #include <stdint.h>
 #include <arch32/multiboot.h>
 #include <arch32/vesa.h>
 #include <arch32/kheap.h>
 #include <lib/kstring.h>
 #include <lib/printk.h>
-#include "arch32/vmm.h"
+#include <arch32/vmm.h>
+#include <arch32/timer.h>
 
 volatile uint8_t is_fb_avl = 0;
 static vesa_display display;
+
+void vesa_get_dis_dimensions(uint32_t *width, uint32_t *height) {
+    *width = display.width;
+    *height = display.height;
+}
+
+void vesa_scroll_up(uint32_t bg_color) {
+    //move display backbuff up by one row
+    size_t size = (display.height - 1) * display.pitch;
+    kmemcpy(display.backbuff_addr, display.backbuff_addr + display.pitch, size);
+    vesa_fill_rect(0, display.height - 1, display.width, 1, bg_color);
+    vesa_flush();
+}
 
 void vesa_put_pixel(uint32_t x, uint32_t y, uint32_t color) {
     if (x >= display.width || y >= display.height) return;
@@ -31,6 +46,9 @@ void vesa_flush(void) {
     kmemcpy(display.frontbuff_addr, display.backbuff_addr, display.buff_size);
 }
 
+void vesa_clear_screen() {
+    kmemset(display.backbuff_addr, 0, display.buff_size);
+}
 
 void init_vesa(uint32_t magic, uint32_t mbinfo_ptr) {
     printk("initiating vesa graphics display\n");
@@ -58,7 +76,8 @@ void init_vesa(uint32_t magic, uint32_t mbinfo_ptr) {
         //panic
         return;
     }
-    kmemset(dis->backbuff_addr, 0, dis->buff_size);
+
+    vesa_clear_screen();
 
     is_fb_avl = 1; //now vesa display is available
     
@@ -80,6 +99,4 @@ void init_vesa(uint32_t magic, uint32_t mbinfo_ptr) {
     vesa_fill_rect(550, 330, 40, 120, 0x00000000); // Right Mouth
 
     vesa_flush();
-
 }
-

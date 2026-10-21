@@ -19,4 +19,4 @@ static inline void buff_putchar(const char c){
 
 void printk(const char *fmt, ...);
 
-void console_flush(); 
+void buff_flush(); 

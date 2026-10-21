@@ -12,6 +12,7 @@
 #include <arch32/memory.h>
 #include <arch32/kheap.h>
 #include <arch32/vesa.h>
+#include "arch32/kconsole.h"
 
 volatile uint16_t* vga_buffer = (uint16_t*)0xB8000;
 
@@ -30,7 +31,8 @@ void kernel_main(uint32_t magic, uint32_t mbinfo_ptr) {
     init_memory(magic, v_mbinfo_ptr);
     asm volatile("sti"); // starts the intrrupts
     init_vesa(magic, v_mbinfo_ptr);
-    ksleep(1);
+    ksleep(5);
+    init_kconsole();
 
     //try heap
     //this is for testing heap, will remove later
@@ -53,10 +55,6 @@ void kernel_main(uint32_t magic, uint32_t mbinfo_ptr) {
         printk("no addr is: %d \n",new + i);
         printk("no value is: %d \n",*(new + i));
     }
-
-    //cause a page fault for just testing remove later
-    volatile uint32_t* null_ptr = (volatile uint32_t*)0x00000000;
-    *null_ptr = 42;
 
     while (1) {
         asm volatile("hlt");
