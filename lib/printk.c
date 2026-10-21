@@ -6,7 +6,6 @@
 #include <arch32/kconsole.h>
 #include <arch32/vesa.h>
 
-
 void print_str(const char* st) {
     while (*st) {
         buff_putchar(*st);
@@ -130,9 +129,9 @@ err:
 //extern void vga_putchar(char c);
 
 // Flushes the memory buffer to the active hardware console
-void buff_flush() {
-    while (log_read_ptr != log_write_ptr) {
-        char c = kernel_log[log_read_ptr];
+void printk_kbuff_flush(uint32_t* read_ptr) {
+    while (*read_ptr != log_write_ptr) {
+        char c = kernel_log[*read_ptr];
         
         //vga_putchar(c); // Send to x86 VGA
         serial_putchar(c); // send to serial port
@@ -141,7 +140,16 @@ void buff_flush() {
             kconsole_putchar(c);
         }
 
-        log_read_ptr = (log_read_ptr + 1) % KERNEL_LOG_SIZE;
+        *read_ptr = (*read_ptr + 1) % KERNEL_LOG_SIZE;
     }
     vesa_flush();
+}
+
+void buff_flush() {
+    printk_kbuff_flush(&log_read_ptr);
+}
+
+void print_all_buff() {
+    uint32_t read_ptr = 0;
+    printk_kbuff_flush(&read_ptr);
 }

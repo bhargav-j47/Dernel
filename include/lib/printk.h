@@ -18,5 +18,5 @@ static inline void buff_putchar(const char c){
 }
 
 void printk(const char *fmt, ...);
-
+void print_all_buff();
 void buff_flush(); 

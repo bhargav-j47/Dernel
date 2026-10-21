@@ -12,7 +12,7 @@
 #include <arch32/memory.h>
 #include <arch32/kheap.h>
 #include <arch32/vesa.h>
-#include "arch32/kconsole.h"
+#include <arch32/kconsole.h>
 
 volatile uint16_t* vga_buffer = (uint16_t*)0xB8000;
 
@@ -33,6 +33,7 @@ void kernel_main(uint32_t magic, uint32_t mbinfo_ptr) {
     init_vesa(magic, v_mbinfo_ptr);
     ksleep(5);
     init_kconsole();
+    print_all_buff(); //print kernel outbuffer uptil now at once
 
     //try heap
     //this is for testing heap, will remove later
