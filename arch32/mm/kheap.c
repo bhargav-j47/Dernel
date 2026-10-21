@@ -2,7 +2,7 @@
 #include <arch32/pmm.h>
 #include <arch32/vmm.h>
 #include <arch32/kheap.h>
-#include "lib/printk.h"
+#include <lib/printk.h>
 
 uint32_t heap_start;
 uint32_t current_heap_addr;

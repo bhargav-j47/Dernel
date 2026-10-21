@@ -2,7 +2,7 @@
 #include <lib/printk.h>
 #include <arch32/multiboot.h>
 #include <arch32/pmm.h>
-#include "arch32/vesa.h"
+#include <arch32/vesa.h>
 
 int parse_mem_multiboot(uint32_t magic, uint32_t mbinfo_ptr) {
 

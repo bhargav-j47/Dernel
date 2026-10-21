@@ -60,12 +60,30 @@ void kconsole_putchar(const char c) {
         return;
     }
 
+    if (c == '\b') {
+        kconsole_rmchar();
+        return;
+    }
+    
     if (col >= m_cols) {
         kconsole_newline();
     }
 
     kconsole_draw_char(c);
     col++;
+}
+
+void kconsole_rmchar() {
+    if (col > 0) {
+        col--;
+    } else if (line > 0) {
+        line--;
+        col = m_cols - 1;
+    } else {
+        return;
+    }
+
+    kconsole_draw_char(' ');
 }
 
 void init_kconsole() {

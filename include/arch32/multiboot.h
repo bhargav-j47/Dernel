@@ -1,6 +1,6 @@
 #pragma once
 #include <stdint.h>
-#include "arch32/vesa.h"
+#include <arch32/vesa.h>
 
 #define MULTIBOOT2_MAGIC 0x36d76289
 #define MULTIBOOT_TAG_TYPE_END 0

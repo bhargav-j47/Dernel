@@ -4,6 +4,8 @@
 #include <lib/printk.h>
 #include <arch32/io.h>
 #include <arch32/vga.h>
+#include <arch32/kconsole.h>
+#include <arch32/vesa.h>
 
 static const char scancode_ascii_lower[128] = {
     /* 0x00 */ KEY_UNKNOWN, 27 /*ESC*/, '1','2','3','4','5','6','7','8','9','0','-','=','\b',
@@ -158,7 +160,7 @@ void print_inp() {
         }
 
         if (code == KEY_BACKSPACE && released == 0) {
-              vga_rmchar();
+              printk("\b");
               continue;
         }
 

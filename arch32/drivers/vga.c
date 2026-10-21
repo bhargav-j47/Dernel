@@ -57,6 +57,11 @@ void vga_putchar(const char c) {
         return;
     }
 
+    if (c == '\b') {
+        vga_rmchar();
+        return;
+    }
+
     if (column >= WIDTH) {
         vga_new_line();
     }
