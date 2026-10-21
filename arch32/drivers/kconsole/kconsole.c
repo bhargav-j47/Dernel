@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <arch32/kconsole.h>
 #include <arch32/font.h>
+#include <lib/printk.h>
 #include <arch32/vesa.h>
 
 static uint32_t m_rows = 0;
@@ -9,7 +10,7 @@ static uint32_t line = 0;
 static uint32_t col = 0;
 
 static uint32_t fg_color = VESA_GREEN;
-static uint32_t bg_color = VESA_BLACK;
+static uint32_t bg_color = VESA_BG_DARK;
 
 void kconsole_scroll_up();
 void kconsole_newline();
@@ -31,7 +32,7 @@ void kconsole_newline() {
 }
 
 void kconsole_scroll_up() {
-    vesa_scroll_up(bg_color);
+    vesa_scroll_up(bg_color, FONT_HEIGHT);
 }
 
 void kconsole_draw_char(const char c) {

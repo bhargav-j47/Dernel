@@ -16,12 +16,16 @@ void vesa_get_dis_dimensions(uint32_t *width, uint32_t *height) {
     *height = display.height;
 }
 
-void vesa_scroll_up(uint32_t bg_color) {
+void vesa_scroll_up(uint32_t bg_color, uint32_t pixel_rows) {
+    if (pixel_rows >= display.height) return;
+
     //move display backbuff up by one row
-    size_t size = (display.height - 1) * display.pitch;
-    kmemcpy(display.backbuff_addr, display.backbuff_addr + display.pitch, size);
-    vesa_fill_rect(0, display.height - 1, display.width, 1, bg_color);
-    vesa_flush();
+    size_t size = (display.height - pixel_rows) * display.pitch;
+    kmemcpy(display.backbuff_addr,
+            display.backbuff_addr + (pixel_rows * display.pitch),
+            size);
+    vesa_fill_rect(0, display.height - pixel_rows, display.width,
+                   pixel_rows, bg_color);
 }
 
 void vesa_put_pixel(uint32_t x, uint32_t y, uint32_t color) {
