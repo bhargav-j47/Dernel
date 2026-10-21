@@ -135,7 +135,6 @@ void keyboard_handler(int_registers_t* regs) {
     uint8_t rv = inb(0x60);
     krb_push(&kbuff, rv);
 
-    print_inp();  //for now
 }
 
 void print_inp() {

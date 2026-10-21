@@ -59,6 +59,7 @@ void kernel_main(uint32_t magic, uint32_t mbinfo_ptr) {
 
     while (1) {
         asm volatile("hlt");
+        print_inp();  //for now
     }
     //volatile int16_t z= 0;
     //volatile int16_t a = 4/z;
