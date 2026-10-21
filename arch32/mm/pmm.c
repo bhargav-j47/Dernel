@@ -45,6 +45,7 @@ void pmm_init_region(uint64_t start_addr, uint64_t length) {
 extern uint32_t* _kernel_end;
 extern uint32_t* _kernel_start;
 uint32_t pmm_bitmap_size;
+uint32_t pmm_bitmap_end; 
 
 void init_pmm(uint32_t magic, uint32_t mbinfo_ptr) {
 
@@ -73,7 +74,8 @@ void init_pmm(uint32_t magic, uint32_t mbinfo_ptr) {
     pmm_total_frames = (4ULL * 1024 * 1024 * 1024) / FRAME_SIZE; // 4 GB
     pmm_bitmap_size = pmm_total_frames / BLOCKS_PER_BYTE;
     pmm_bitmap = (uint8_t*) kernel_end;
-
+    pmm_bitmap_end = (uint32_t)pmm_bitmap + pmm_bitmap_size;
+   
     //set all as used
     kmemset(pmm_bitmap, 0xFF, pmm_bitmap_size);
 

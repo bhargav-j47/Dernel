@@ -3,6 +3,7 @@
 #include <arch32/pmm.h>
 #include <arch32/vmm.h>
 #include <arch32/kheap.h>
+#include <lib/printk.h>
 
 extern uint32_t _kernel_end;
 
@@ -15,6 +16,6 @@ void init_memory(uint32_t magic, uint32_t mbinfo_ptr) {
 
     //setup heap
     //get the heap base by adding pmm_bitmap_size and aligning to 4KB
-    uint32_t heap_base = ((uint32_t)(&_kernel_end) + pmm_bitmap_size + 4095) & ~4095;
+    uint32_t heap_base = (pmm_bitmap_end + 4095) & ~4095;
     init_kheap(heap_base);
 }

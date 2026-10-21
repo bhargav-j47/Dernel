@@ -15,6 +15,7 @@
 #define BLOCKS_PER_BYTE 8
 
 extern uint32_t pmm_bitmap_size;
+extern uint32_t pmm_bitmap_end;
 
 uint32_t pmm_alloc_frame();
 void pmm_free_frame(uint32_t frame);
