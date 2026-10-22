@@ -94,6 +94,5 @@ void init_kconsole() {
     m_cols = width / FONT_WIDTH;
     m_rows = height / FONT_HEIGHT;
 
-    vesa_fill_rect(0, 0, width, height, bg_color);
     vesa_flush();
 }
